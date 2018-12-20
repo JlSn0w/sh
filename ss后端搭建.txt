@@ -1,0 +1,82 @@
+使用宝塔安装一个LNMP环境，注意PHP版本选择7.1，其他的默认即可。
+
+环境安装好后，添加一个站点，绑定你的域名
+
+记住你的这个站点路径，回到Xshell中，进入到你的站点目录内：
+
+cd /www/wwwroot/你的站点域名
+
+下载面板程序文件
+
+https://github.com/NimaQu/ss-panel-v3-mod_Uim.git
+
+回到宝塔面板中，点击站点设置，添加伪静态规则：
+
+location / {
+                        try_files $uri $uri/ /index.php$is_args$args;
+                }
+
+
+接着点击网站目录，将运行目录改为/public
+
+
+
+点击宝塔的软件管理，打开PHP7.1的设置页面，删除带prc开头的两个函数
+
+
+现在在你的站点根目录下找到storage目录，修改权限 给777并把所有者改为www
+
+
+此时打开宝塔面板内的phpmyadmin，新建一个数据库命名为sspanel
+
+
+
+导入我们刚下载到本地的数据库文件，数据库文件的路径是 sql/glzjin_all.sql
+
+回到宝塔面板中，进入config目录，编辑目录下的.config.php文件：
+
+
+
+填写你的站点名字、域名、随机安全码：
+
+
+
+填写你的数据库配置信息：
+
+
+
+确定填写都是正确后，保存文件。
+
+回到Xshell中，并在你的站点根目录内执行下面的命令开始安装依赖：
+
+php composer.phar install
+
+
+等待....（安装需要一段时间）
+
+添加计划任务：
+
+crontab -e
+输入如下内容：119.23.187.93为你的网站根目录名字
+
+30 22 * * * php /www/wwwroot/119.23.187.93/xcat sendDiaryMail
+*/1 * * * * php /www/wwwroot/119.23.187.93/xcat synclogin
+*/1 * * * * php /www/wwwroot/119.23.187.93/xcat syncvpn
+0 0 * * * php -n /www/wwwroot/119.23.187.93/xcat dailyjob
+*/1 * * * * php /www/wwwroot/119.23.187.93/xcat checkjob    
+*/1 * * * * php -n /www/wwwroot/119.23.187.93/xcat syncnas
+退出并保存。
+
+现在来创建面板的管理员账号：
+
+php -n xcat createAdmin
+一般输入这个命令后会有一些警告和错误信息，这里我们直接无视掉就好了，稍等一会儿就会提示让你输入管理员的邮箱之类的，照着填就行。
+
+管理员账号创建完成后，现在来同步一下用户数据
+
+php xcat syncusers
+回车即可同步完成。
+
+至此，该面板程序就部署完成了，可以打开浏览器看看长什么样子
+
+End ....

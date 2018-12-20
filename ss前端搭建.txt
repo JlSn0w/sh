@@ -1,0 +1,29 @@
+cd ~
+yum -y update   (更新需要一段时间，可以先做其他事情..等下再来继续。)
+yum -y groupinstall "Development Tools"
+yum -y install wget
+yum -y groupinstall "Development Tools"
+wget https://github.com/jedisct1/libsodium/releases/download/1.0.10/libsodium-1.0.10.tar.gz
+tar xf libsodium-1.0.10.tar.gz && cd libsodium-1.0.10
+./configure && make -j2 && make install
+echo /usr/local/lib > /etc/ld.so.conf.d/usr_local_lib.conf
+ldconfig
+
+
+
+用vim打开 usermysql.json 写入你的数据库信息和 Node ID，user为数据库用户名，password是数据库密码，db为数据库名
+
+
+一切没问题之后，可以开始运行后端程序了。
+
+在项目根目录（shadowsocksr）中直接执行  python server.py
+
+其他运行命令：
+
+后台运行（无 log，ssh 窗口关闭后也继续运行） ./run.sh
+
+后台运行（输出 log，ssh 窗口关闭后也继续运行） ./logrun.sh
+
+后台运行时查看运行情况 ./tail.sh
+
+停止运行 ./stop.sh
